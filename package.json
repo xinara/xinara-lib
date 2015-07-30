@@ -1,0 +1,35 @@
+{
+  "name": "xinara-lib",
+  "version": "0.1.0",
+  "description": "xinera is not another recursive acronym - common library",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/xinara/xinara-lib.git"
+  },
+  "keywords": [
+    "xinara",
+    "privacy",
+    "secure",
+    "lta"
+  ],
+  "author": "The xinara team",
+  "license": "WTFPL",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-jsdoc": "^0.6.4",
+    "grunt-simple-mocha": "^0.4.0",
+    "jshint-stylish": "^2.0.1"
+  },
+  "dependencies": {
+    "async": "^1.4.0",
+    "openpgp": "^1.2.0",
+    "sequelize": "^3.5.1",
+    "sqlite3": "^3.0.9",
+    "underscore": "^1.8.3"
+  }
+}
