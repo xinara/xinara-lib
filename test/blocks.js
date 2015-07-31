@@ -23,6 +23,7 @@ var BlockModel  = require('../lib/models/blocks');
 
 var publicKey = fs.readFileSync(datadir + '/public4096.asc');
 var privateKey = fs.readFileSync(datadir + '/private4096.asc');
+var otherKey = fs.readFileSync(datadir + '/otherkey.asc');
 var lorem = fs.readFileSync(datadir + '/lorem.txt');
 var cipheredLorem = fs.readFileSync(datadir + '/lorem.asc');
 
@@ -56,23 +57,6 @@ describe("Test block creation from content", function () {
         }).catch(done);
     });
 
-    it("Creating block from lorem", function (done) {
-    
-        BlockModel.createSignedBlock(
-                lorem, privateKeyInstance, '123456')
-        .then(function (block) {
-            assert.equal(block.keyId, '212e55b4e0059edd', "Incorrect KeyID");
-            assert.equal(block.stat, 'new', "Incorrect default status");
-
-            var keyId = block.content.packets[0].publicKeyId.toHex();
-
-            assert.equal(keyId, '0000000000000000', "The block has keyId!!");
-
-            done();
-        }).catch(done);
-
-    });
-
     it("Creating block from ciphered content", function (done) {
     
         BlockModel.create({
@@ -91,6 +75,75 @@ describe("Test block creation from content", function () {
         })
         .catch(done);
 
+    });
+
+    it("Creating block from lorem", function (done) {
+    
+        BlockModel.createSignedBlock(
+                lorem, privateKeyInstance, '123456')
+        .then(function (block) {
+            assert.equal(block.keyId, '212e55b4e0059edd', "Incorrect KeyID");
+            assert.equal(block.stat, 'new', "Incorrect default status");
+
+            var keyId = block.content.packets[0].publicKeyId.toHex();
+
+            assert.equal(keyId, '0000000000000000', "The block has keyId!!");
+
+            done();
+        }).catch(done);
+
+    });
+
+    it("Try to decrypt block with INvalid key", function (done) {
+
+        KeyModel.create({
+            content: otherKey.toString('utf8')
+        })
+        .then(function (key) {
+
+            BlockModel.findOne({
+                where: {
+                    checksum: '8e27436d3a5274a809dccec0e5db27c69ee17c3e'
+                }
+            })
+            .then(function (block) {
+            
+                block.checkWith(key, '123456')
+                .then(function (result) {
+                    assert.equal(result.works, false, "WTF??");
+                    done();
+                })
+                .catch(done);
+
+            })
+            .catch(done);
+       
+        })
+        .catch(done);
+
+
+
+    
+    });
+    it("Try to decrypt block with valid key", function (done) {
+        BlockModel.findOne({
+            where: {
+                checksum: '8e27436d3a5274a809dccec0e5db27c69ee17c3e'
+            }
+        })
+        .then(function (block) {
+        
+            block.checkWith(privateKeyInstance, '123456')
+            .then(function (result) {
+                assert.equal(result.works, true, "Not resolved!");
+                assert.equal(result.result, lorem.toString('utf8'), "Invalid result");
+                done();
+            })
+            .catch(done);
+
+        })
+        .catch(done);
+    
     });
 
 });
