@@ -24,6 +24,7 @@ var BlockModel  = require('../lib/models/blocks');
 var publicKey = fs.readFileSync(datadir + '/public4096.asc');
 var privateKey = fs.readFileSync(datadir + '/private4096.asc');
 var lorem = fs.readFileSync(datadir + '/lorem.txt');
+var cipheredLorem = fs.readFileSync(datadir + '/lorem.asc');
 
 describe("Test block creation from content", function () {
     var privateKeyInstance;
@@ -69,6 +70,26 @@ describe("Test block creation from content", function () {
 
             done();
         }).catch(done);
+
+    });
+
+    it("Creating block from ciphered content", function (done) {
+    
+        BlockModel.create({
+            content: cipheredLorem.toString('utf8')
+        })
+        .then(function (block) {
+            assert.equal(block.keyId, null, "Message has key id");
+            assert.equal(block.checksum, '8e27436d3a5274a809dccec0e5db27c69ee17c3e', "Incorrect checksum");
+
+            var keyId = block.content.packets[0].publicKeyId.toHex();
+
+            assert.equal(keyId, '0000000000000000', "The block has keyId!!");
+
+            done();
+
+        })
+        .catch(done);
 
     });
 
