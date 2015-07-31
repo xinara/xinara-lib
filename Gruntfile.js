@@ -60,7 +60,7 @@ module.exports = function(grunt) {
 
     // Custom tasks
     grunt.registerTask('check', ['jshint']);
-    grunt.registerTask('test', ['simplemocha']);
+    grunt.registerTask('test', ['check', 'simplemocha']);
 
     // Default task
     grunt.registerTask('default', ['check']);

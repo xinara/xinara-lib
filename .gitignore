@@ -2,5 +2,6 @@
 *.sw*
 
 node_modules
+test/tmp
 
 docs
