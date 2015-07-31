@@ -29,7 +29,7 @@ module.exports = function(grunt) {
         },
         simplemocha: {
             options: {
-                timeout: 3000,
+                timeout: 10000,
                 ignoreLeaks: false,
                 uid: 'bdd',
                 reporter: 'spec'
